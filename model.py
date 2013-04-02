@@ -1,7 +1,7 @@
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, ForeignKey
 from sqlalchemy import Column, Integer, String, DateTime, Date
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship, backref
 
 
 engine = None
@@ -11,61 +11,56 @@ Base = declarative_base()
 
 ### Class declarations go here
 class User(Base):
-	__tablename__ = "users"
+    __tablename__ = "users"
 
-	id = 			Column(Integer, primary_key = True)
-	email = 		Column(String(64), nullable=True)
-	password = 		Column(Integer, nullable=True)
-	age = 			Column(String(15), nullable=True)
-	zipcode = 		Column(String(15), nullable=True)
+    id =            Column(Integer, primary_key = True)
+    age =           Column(String(15))
+    gender =        Column(String(15))
+    zipcode =       Column(String(15))
+    email =         Column(String(64), nullable=True)
+    password =      Column(Integer, nullable=True)
 
-	def __init__(self, age, zipcode, email=None, password=None):
-		self.email = 		email
-		self.password = 	password
-		self.age = 			age
-		self.zipcode = 		zipcode
 
 class Movie(Base):
-	__tablename__= "movies"
+    __tablename__= "movies"
 
-	id = 			Column(Integer, primary_key= True)
-	name= 			Column(String(64), nullable=True)
-	released_at=	Column(Date, nullable=False)
-	imdb_url= 		Column(String(128), nullable=True)
+    id =            Column(Integer, primary_key= True)
+    name=           Column(String(64))
+    released_on=    Column(Date)
+    imdb_url=       Column(String(128))
 
-	def __init__(self, id, name, released_at, imdb_url)
-		self.name = 		name 
-		self.released_at= 	Date
-		self.imdb_url= 		imdb_url
 
-class Ratings(Base):
-	__tablename__= "ratings"
+class Rating(Base):
+    __tablename__= "ratings"
 
-	id =			Column(Integer, primary_key= True)
-	movie_id =		Column(Integer, ForeignKey('movies.id'))
-	user_id = 		Column(Integer, ForeignKey('users.id'))
-	rating =		Column(Integer, nullable=False)
+    id =            Column(Integer, primary_key= True)
+    movie_id =      Column(Integer, ForeignKey('movies.id'))
+    user_id =       Column(Integer, ForeignKey('users.id'))
+    rating =        Column(Integer, nullable=False)
 
-	def __init__(self, movie_id, user_id, rating):
-		self.movie_id = 	movie_id
-		self.user_id = 		user_id
-		self.rating = 		rating
+    user = relationship("User", backref="ratings")
+    movie = relationship("Movie", backref="ratings")
 
 ### End class declarations
 
+def create_db():
+    Base.metadata.create_all(engine)
+
 def connect():
-	global engine
-	global Session
+    global engine
+    global session
+    engine = create_engine("sqlite:///ratings.db", echo=True)
+    session = sessionmaker(bind=engine)
 
-	engine = create_engine("sqlite:///ratings.db", echo=True)
-	Session = sessionmaker(bind=engine)
-
-	return Session() 
+    return session() 
 
 
 def main():
     """In case we need this for something"""
-    pass
+    connect()
+    # if db hasn't already been created call the following:
+    # create_db()
+    
 
 if __name__ == "__main__":
     main()
