@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block css %}
+<style type="text/css">
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="signin">
+    <form class="form" method="POST" action="{{ url_for('signin') }}">
+        <h2 class="form-heading">Please sign in</h2>
+        <input type="text" class="input-block-level" placeholder="Email address" name="email">
+        <input type="password" class="input-block-level" placeholder="Password" name="password">
+        <button class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+
+<div class="register">
+        <form class="form" method="POST" action="{{ url_for('register') }}">
+        <h2 class="form-heading">Register your account</h2>
+        <input type="text" class="input-block-level" placeholder="Email address" name="email">
+        <input type="password" class="input-block-level" placeholder="Password" name="password">
+        <input type="text" class="input-block-level" placeholder="Your age" name="age">
+        <input type="text" class="input-block-level" placeholder="M or F" name="gender">
+        <input type="text" class="input-block-level" placeholder="Zipcode" name="zipcode">
+        <button class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+{% endblock %}

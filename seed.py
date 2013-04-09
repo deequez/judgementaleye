@@ -1,5 +1,6 @@
 import model
 import csv
+import datetime
 
 """
 1. open a file
@@ -11,7 +12,6 @@ import csv
 7. repeat until done 
 """
 
-
 def load_users(session):
     with open('seed_data/u.user', 'rb') as f:
         reader = csv.reader(f, delimiter="|")
@@ -19,7 +19,8 @@ def load_users(session):
             id, age, gender, occupation, zipcode = row
             id = int(id)
             age = int(age)
-            user_object = model.User(id=id, age=age, zipcode=zipcode)
+            user_object = model.User(id=id, age=age, gender=gender, zipcode=zipcode,
+                            email=None, password=None)
             session.add(user_object)
             session.commit()
 
@@ -28,7 +29,12 @@ def load_movies(session):
     with open('seed_data/u.item', 'rb') as f:
         reader = csv.reader(f, delimiter = "|")
         for row in reader:
-            id, name, released_on, imdb_url = int(row[0]), row[1], row[2], row[3]
+            id, name, released_on, imdb_url = int(row[0]), row[1], row[2], row[4]
+            name = name.decode('latin-1')
+            if not released_on:
+                continue
+            
+            released_on = datetime.datetime.strptime(released_on, "%d-%b-%Y")
             movie_obect = model.Movie(id=id, name=name, released_on=released_on, 
                             imdb_url=imdb_url)
             session.add(movie_obect)
@@ -37,7 +43,7 @@ def load_movies(session):
 
 def load_ratings(session):
     with open('seed_data/u.data', 'rb') as f:
-        reader = csv.reader(f, delimiter="|")
+        reader = csv.reader(f, delimiter="\t")
         for row in reader:
             user_id, movie_id, rating = int(row[0]), int(row[1]), int(row[2])
             rating_object = model.Rating(user_id=user_id, movie_id=movie_id, rating=rating)
@@ -46,9 +52,10 @@ def load_ratings(session):
 
 
 def main(session):
+    # if dataset hasn't already been imported into DB, call the following:
     # load_users(session)
-    load_movies(session)
-    load_ratings(session)
+    # load_movies(session)
+    # load_ratings(session)
 
 
 if __name__ == "__main__":

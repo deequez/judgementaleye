@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Judgemental Eye</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    {% block css %}{% endblock %}
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
+            <div class="container-fluid">
+                <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="brand" href="#">Judgemental Eye</a>
+                <div class="nav-collapse collapse">
+                    <ul class="nav">
+                        <li class="active"><a href="{{ url_for('index') }}">Home</a></li>
+                        <li><a href="{{ url_for('about') }}">About</a></li>
+                        {% if session["user_id"] %}
+                        <li><a href="{{ url_for('signed_in_landing') }}">Users</a></li>
+                        {% endif %}
+                    </ul>
+                    {% if session["user_id"] %}
+                    <div class="logout">
+                        <form class="navbar-text pull-right" action="{{ url_for('logout') }}">
+                            <button class="btn btn-primary">Logout</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div><!--/.nav-collapse -->
+            </div>
+        </div>
+    </div>
+
+    <h1 style="width:60%; margin:10px auto; position:relative; text-align:center;">The Judgemental Eye</h1>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for category, message in messages %}
+                    <li class="{{ category }}"><strong>Error: </strong>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}    
+    {% endwith %}
+    <div class="container-fluid">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>

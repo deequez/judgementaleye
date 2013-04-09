@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h3>All users in database:</h3>
+{% for user in users %}
+    <li> <a href="{{ url_for('view_movies', id=user.id) }}">{{ user.id }},</a> {{ user.age }}, {{ user.gender }}, {{ user.zipcode }}
+    </li>
+{% endfor %}
+{% endblock %}

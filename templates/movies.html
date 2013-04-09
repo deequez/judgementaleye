@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>User {{ id }} has rated the following movies:</h3>
+{% if not ratings %}
+    <li>User {{ id }} has no ratings.</li>
+{% else %}
+    <table class="table table-condensed table-bordered">
+        <thead>
+            <tr>
+                <th>Movie</th>
+                <th>Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for rating in ratings %}
+                <tr>
+                    <td>{{ rating.movie.name }}</td>
+                    <td>{{ rating.rating }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endif %}
+
+{% endblock %}
